@@ -18,3 +18,7 @@
 	- `git clone https://github.com/WordPress-Coding-Standards/WordPress-Coding-Standards.git ~/wpcs`
 - Register WordPress Standard
 	- `phpcs --config-set installed_paths /Users/<your-user>/wpcs`
+- Verify Registered Standards: `phpcs -i`
+- Run linter from project root:
+	- `phpcs --standard=WordPress wp-content/themes/test-php-linter-theme`
+

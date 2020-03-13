@@ -1,29 +1,49 @@
-# PHP CircleCI 2.0 configuration file
-
 version: 2
 jobs:
-  build:
+  ci-tools/phpcs-wordpress:
     docker:
-      - image: circleci/php:7.1-node-browsers
+    - image: circleci/php:7.2-cli-buster
     steps:
-      - checkout
-
-      - run: sudo apt update
-      - run: sudo docker-php-ext-install zip
-
-      - restore_cache:
-          keys:
-            - v1-dependencies-{{ checksum "composer.json" }}
-            - v1-dependencies-
-
-      - run: composer install -n --prefer-dist
-
-      - save_cache:
-          key: v1-dependencies-{{ checksum "composer.json" }}
-          paths:
-            - ./vendor
-      - restore_cache:
-          keys:
-            - node-v1-{{ checksum "package.json" }}
-            - node-v1-
-      - run: composer test
+    - run:
+        command: |
+          set -e
+          if command -v composer > /dev/null 2>&1; then
+            echo The command composer is available
+          else
+            echo The command composer is not available, but ensure_command was called. Aborting job.
+            exit 1
+          fi
+        name: Ensure the command composer exists, or abort the job
+    - run:
+        command: |
+          echo -e "\n"'export PATH="$PATH:$HOME/.composer/vendor/bin"' >> $BASH_ENV
+          source $BASH_ENV
+          composer global require drupal/coder wp-coding-standards/wpcs phpcompatibility/phpcompatibility-wp >/dev/null
+          phpcs --config-set installed_paths $HOME/.composer/vendor/drupal/coder/coder_sniffer/,\
+          $HOME/.composer/vendor/wp-coding-standards/wpcs/,\
+          $HOME/.composer/vendor/phpcompatibility/php-compatibility/PHPCompatibility/,\
+          $HOME/.composer/vendor/phpcompatibility/phpcompatibility-wp/PHPCompatibilityWP,\
+          $HOME/.composer/vendor/phpcompatibility/phpcompatibility-paragonie/PHPCompatibilityParagonieRandomCompat
+        name: Install Packages
+    - run:
+        command: phpcs -i && phpcs --config-show
+        name: Validate PHPCS Installed
+    - run:
+        command: |
+          set -e
+          if command -v phpcs > /dev/null 2>&1; then
+            echo The command phpcs is available
+          else
+            echo The command phpcs is not available, but ensure_command was called. Aborting job.
+            exit 1
+          fi
+        name: Ensure the command phpcs exists, or abort the job
+    - checkout
+    - run:
+        command: phpcs --standard="WordPress,WordPress-Extra,WordPress-Core" --extensions="php" ./wp-content/themes/test-php-linter-theme
+        name: Run PHPCS Code
+workflows:
+  phpcs-wordpress:
+    jobs:
+    - ci-tools/phpcs-wordpress
+  version: 2

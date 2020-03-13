@@ -21,4 +21,3 @@
 - Verify Registered Standards: `phpcs -i`
 - Run linter from project root:
 	- `phpcs --standard=WordPress wp-content/themes/test-php-linter-theme`
-

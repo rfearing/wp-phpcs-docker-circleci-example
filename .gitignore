@@ -1,0 +1,5 @@
+**/vendor
+**/node_modules
+.DS_Store
+
+# Note, normally I'd ignore .vscode, but I want to keep it as an examplegit s

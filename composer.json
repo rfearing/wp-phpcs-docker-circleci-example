@@ -1,0 +1,13 @@
+{
+    "require": {
+        "wp-coding-standards/wpcs": "^2.2",
+        "squizlabs/php_codesniffer": "*"
+    },
+    "scripts": {
+        "post-install-cmd": "./vendor/squizlabs/bin/phpcs --config-set installed_paths vendor/wp-coding-standards/wpcs",
+        "post-update-cmd" : "./vendor/squizlabs/bin/phpcs --config-set installed_paths vendor/wp-coding-standards/wpcs",
+        "test": [
+            "phpcs --standard=WordPress --ignore=*/vendor/*,*/node_modules/* wp-content/themes/test-php-linter-theme"
+        ]
+    }
+}

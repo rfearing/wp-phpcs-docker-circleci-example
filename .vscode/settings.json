@@ -1,0 +1,6 @@
+{
+  "phpcs.standard": "WordPress",
+  "editor.insertSpaces": false,
+  "editor.tabSize": 4,
+  "intelephense.files.maxSize": 3200000
+}
